@@ -4,6 +4,7 @@ from aiogram import Bot, Dispatcher, types, F
 from aiogram.enums import ParseMode, ChatMemberStatus
 from aiogram.filters.command import Command
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from datetime import datetime, timedelta
 import config
 
 logging.basicConfig(level=logging.INFO)
@@ -14,6 +15,29 @@ dp = Dispatcher()
 # {config.promo}
 # <a href="https://t.me/yandex_travel_chats/3">Поделитесь</a>
 
+
+def last_day_of_month():
+    today = datetime.now()
+    first_day_of_next_month = (today.replace(
+        day=1) + timedelta(days=32)).replace(day=1)
+    last_day_of_month = first_day_of_next_month - timedelta(days=1)
+    months = {
+        1: "января",
+        2: "февраля",
+        3: "марта",
+        4: "апреля",
+        5: "мая",
+        6: "июня",
+        7: "июля",
+        8: "августа",
+        9: "сентября",
+        10: "октября",
+        11: "ноября",
+        12: "декабря"
+    }
+    month_name = months[last_day_of_month.month]
+    formatted_date = f"{last_day_of_month.day} {month_name} {last_day_of_month.year} года"
+    return formatted_date
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
@@ -28,7 +52,7 @@ async def cmd_start(message: types.Message):
         await message.answer(f'''
 Ура, промокод на скидку до 20% уже здесь: {config.promo}
 
-Максимальная скидка: 2000 ₽. Действует на один заказ на бронирование отеля в <a href="https://redirect.appmetrica.yandex.com/serve/1181039353179218124?afpub_id=smm&site_id=telegram&creative_id=chat03">мобильном приложении</a> Яндекс Путешествий до 30 апреля 2024 года. <a href="https://yandex.ru/legal/travel_promocode/">Условия</a> использования промокода.
+Максимальная скидка: 2000 ₽. Действует на один заказ на бронирование отеля в <a href="https://redirect.appmetrica.yandex.com/serve/1181039353179218124?afpub_id=smm&site_id=telegram&creative_id=chat03">мобильном приложении</a> Яндекс Путешествий до {last_day_of_month()}. <a href="https://yandex.ru/legal/travel_promocode/">Условия</a> использования промокода.
 
 Куда планируете поехать в отпуск? <a href="https://t.me/yandex_travel_chats/3">Поделитесь</a> идеями с другими путешественниками🌍''', parse_mode=ParseMode.HTML, disable_web_page_preview=True)
 
@@ -42,7 +66,7 @@ async def send_promo(callback: types.CallbackQuery):
         await callback.message.answer(f'''
 Ура, промокод на скидку до 20% уже здесь: {config.promo}
 
-Максимальная скидка: 2000 ₽. Действует на один заказ на бронирование отеля в <a href="https://redirect.appmetrica.yandex.com/serve/1181039353179218124?afpub_id=smm&site_id=telegram&creative_id=chat03">мобильном приложении</a> Яндекс Путешествий до 30 апреля 2024 года. <a href="https://yandex.ru/legal/travel_promocode/">Условия</a> использования промокода.
+Максимальная скидка: 2000 ₽. Действует на один заказ на бронирование отеля в <a href="https://redirect.appmetrica.yandex.com/serve/1181039353179218124?afpub_id=smm&site_id=telegram&creative_id=chat03">мобильном приложении</a> Яндекс Путешествий до {last_day_of_month()}. <a href="https://yandex.ru/legal/travel_promocode/">Условия</a> использования промокода.
 
 Куда планируете поехать в отпуск? <a href="https://t.me/yandex_travel_chats/3">Поделитесь</a> идеями с другими путешественниками🌍''', parse_mode=ParseMode.HTML, disable_web_page_preview=True)
         await callback.answer()
